@@ -1,0 +1,47 @@
+@keyframes moveFromBottomtrid {
+  25% {
+    transform: scale(0.8);
+  }
+  50%,
+  100% {
+    transform: translateY(-100%) scale(0.8);
+  }
+}
+
+@keyframes moveFromToptrid {
+  25% {
+    transform: scale(0.8);
+  }
+  50%,
+  100% {
+    transform: translateY(100%) scale(0.8);
+  }
+}
+
+@keyframes moveFromBottomtridIn {
+  0%,
+  25% {
+    transform: scale(0.8) translateY(125%);
+  }
+  50% {
+    transform: scale(0.8) translateY(0);
+  }
+  75%,
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes moveFromToptridIn {
+  0%,
+  25% {
+    transform: scale(0.8) translateY(-125%);
+  }
+  50% {
+    transform: scale(0.8) translateY(0);
+  }
+  75%,
+  100% {
+    transform: scale(1);
+  }
+}

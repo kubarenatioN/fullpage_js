@@ -1,4 +1,30 @@
-@keyframes moveFromBottomtrid {
+.pr-fp-hidden {
+  margin-left: -5000px;
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+}
+
+.pr-fp-hidden.pr-fp-active {
+  visibility: visible;
+  margin-left: 0;
+}
+
+.pr-animating-in {
+  animation-duration: 1.6s;
+}
+
+.pr-animating-out {
+  animation-duration: 1.6s;
+}
+
+.section {
+  .fp-overflow {
+    height: 100vh;
+  }
+}
+
+@keyframes moveFromBottomOut {
   25% {
     transform: scale(0.8);
   }
@@ -8,7 +34,7 @@
   }
 }
 
-@keyframes moveFromToptrid {
+@keyframes moveFromTopOut {
   25% {
     transform: scale(0.8);
   }
@@ -18,7 +44,7 @@
   }
 }
 
-@keyframes moveFromBottomtridIn {
+@keyframes moveFromBottom {
   0%,
   25% {
     transform: scale(0.8) translateY(125%);
@@ -32,7 +58,7 @@
   }
 }
 
-@keyframes moveFromToptridIn {
+@keyframes moveFromTop {
   0%,
   25% {
     transform: scale(0.8) translateY(-125%);
@@ -44,4 +70,9 @@
   100% {
     transform: scale(1);
   }
+}
+
+.footer {
+  padding-block: 4rem;
+  color: #000000;
 }

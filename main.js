@@ -1,16 +1,26 @@
-let canMove = false;
-let isReady = false;
-let firstLoad = true;
-let blockWheel = false;
+let isScrolling = false;
 
-document.addEventListener('wheel', controlWheel, { passive: false });
+const ACTIVE_SLIDE = 'pr-fp-active';
+const Z_INDEX_ABOVE = 2;
+const Z_INDEX_BELOW = 1;
 
+function initContainer(fp) {
+  console.log(fp);
+  const container = document.querySelectorAll('.fp-section');
+
+  container.forEach((el, i) => {
+    el.classList.add('pr-fp-hidden')
+    if (i === 0) {
+      el.classList.add(ACTIVE_SLIDE)
+    }
+  })  
+}
 
 const fp = new fullpage("#main-page-fp", {
 	autoScrolling: true,
 	scrollHorizontally: true,
 	anchors: ['one', 'two', 'three', 'four', 'footer'],
-  sectionsColor: ['bisque', 'aquamarine', 'blueviolet', 'brown', '#333'],
+  sectionsColor: ['bisque', 'aquamarine', 'blueviolet', 'brown', '#dedede'],
   scrollingSpeed: 400,
   navigation: true,
   afterRender: () => {
@@ -18,58 +28,70 @@ const fp = new fullpage("#main-page-fp", {
       isReady = true;
     }, 200)
   },
-  beforeLeave: (origin, destination) => {
-    if (!isReady) {
-      return true;
-    }
-
-    // console.log('canMove', canMove);
-    
-    if (!canMove) {
-      fp.setMouseWheelScrolling(false);
-      // fp.setAllowScrolling(false);
-      blockWheel = true;
-
-      requestTimeout(() => {
-        const id = destination.anchor
-        // console.log('moveTo', id);
-
-        canMove = true;
-        fp.silentMoveTo(id);
-      }, 600);
-
+  onLeave: (origin, dest, dir) => {
+    if (isScrolling) {
       return false;
     }
 
-    return true;
-  },
-  afterLoad: () => {
-    if (!isReady) {
-      return true;
-    }
+    isScrolling = true;
 
-    if (firstLoad) {
-      firstLoad = false;
-      return true;
-    }
+    slideLeave(origin, dest, dir);
 
-    // console.log('afterLoad');
+    const id = dest.anchor;
 
-    canMove = false;
-    requestTimeout(() => {
-      blockWheel = false;
-      // fp.setAllowScrolling(true);
-      fp.setMouseWheelScrolling(true);
-      console.log('ALLOW');
-    }, 800)
+    fp.moveTo(id);
   }
 })
 
-console.log(fp)
+initContainer(fp);
 
-// setTimeout(() => {
-//   fp.moveTo('two');
-// }, 500);
+function slideLeave(origin, dest, dir) {
+  const currentSlide = origin.item;
+  const nextSlide = dest.item;
+
+  let animIn = '';
+  let animOut = '';
+
+  if (dir === 'up') {
+    animIn = 'moveFromTop';
+  } else {
+    animIn = 'moveFromBottom';
+  }
+  animOut = animIn + 'Out'
+
+
+  nextSlide.classList.add('pr-animating-in', ACTIVE_SLIDE);
+  nextSlide.style.animationName = animIn;
+  nextSlide.style.zIndex = Z_INDEX_ABOVE;
+
+  nextSlide.onanimationend = (event) => {
+    const { animationName } = event
+
+    if (animationName === animIn) {
+      currentSlide.classList.remove(ACTIVE_SLIDE);
+
+      // reset animations for both items after next slide animation complete
+      currentSlide.style.animationName = '';
+      nextSlide.style.animationName = '';
+
+      onAnimationPhaseEnd();
+    }
+  };
+
+  currentSlide.classList.add('pr-animating-out');
+  currentSlide.style.animationName = animOut;
+  nextSlide.style.zIndex = Z_INDEX_BELOW;
+
+  currentSlide.onanimationend = () => {
+    // ...
+  };
+}
+
+function onAnimationPhaseEnd() {
+  requestTimeout(() => {
+    isScrolling = false;
+  }, 100);
+}
 
 function requestTimeout(fn, delay) {
   const start = new Date().getTime();
@@ -98,17 +120,3 @@ function requestTimeout(fn, delay) {
 
   return cancel;
 };
-
-
-// document.addEventListener('wheel', controlWheel, { passive: false })
-
-function controlWheel(e) {
-  if (blockWheel) {
-    // console.log('block');
-    
-    e.preventDefault();
-    e.stopImmediatePropagation();
-  
-    return false;
-  };
-}

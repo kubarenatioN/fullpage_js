@@ -4667,7 +4667,7 @@
 
 
   function MouseWheelHandler(e) {  
-    console.log('scroll', e);
+    // console.log('scroll', e);
 
     var curTime = new Date().getTime();
     var isNormalScroll = hasClass($(COMPLETELY_SEL)[0], NORMAL_SCROLL);
@@ -4743,7 +4743,7 @@
             scrollTrigger: 'wheel'
           }); //scrolling down?
 
-          console.log('--- scrolling()');
+          // console.log('--- scrolling()');
           
           if (delta < 0) {
             scrolling('down');
